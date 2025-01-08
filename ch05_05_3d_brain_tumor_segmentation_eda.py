@@ -1,28 +1,28 @@
-라이브러리 및 경로 설정
+# 라이브러리 및 경로 설정
 
-Path, natsort, tqdm 등을 사용해 파일 경로를 수집
-cfg 클래스로 데이터셋(브레인 MRI) 위치와 관련 CSV 파일 위치를 한눈에 확인할 수 있게 설계
-장점: 유지보수 시 경로만 수정해도 전체 코드에 반영 가능
-데이터 로딩 & DataFrame 구성
+# Path, natsort, tqdm 등을 사용해 파일 경로를 수집
+# cfg 클래스로 데이터셋(브레인 MRI) 위치와 관련 CSV 파일 위치를 한눈에 확인할 수 있게 설계
+# 장점: 유지보수 시 경로만 수정해도 전체 코드에 반영 가능
+# 데이터 로딩 & DataFrame 구성
 
-폴더별로 flair, t1, t1ce, t2, mask NIfTI 파일 경로를 찾고 pandas DataFrame에 저장
-df.dropna()로 누락된 항목이 있는 폴더 제거 → 유효한 이미지 셋만 남김
-장점: 이미지 경로를 DataFrame으로 관리하면, 추후 메타 정보나 라벨 정보를 쉽게 병합 가능
-메타데이터 추출
+# 폴더별로 flair, t1, t1ce, t2, mask NIfTI 파일 경로를 찾고 pandas DataFrame에 저장
+# df.dropna()로 누락된 항목이 있는 폴더 제거 → 유효한 이미지 셋만 남김
+# 장점: 이미지 경로를 DataFrame으로 관리하면, 추후 메타 정보나 라벨 정보를 쉽게 병합 가능
+# 메타데이터 추출
 
-각 NIfTI(이미지) 파일에 대해 SimpleITK 또는 nibabel로 로드해 shape, spacing, min/max intensity 확인
-extract_meta_data() 함수로 재사용성 높임
-장점: 동일한 구조의 메타 정보를 한 번에 모아서, 이미지 특성 분포(예: max intensity)가 어떻게 다른지 파악 용이
-마스크 라벨 검사
+# 각 NIfTI(이미지) 파일에 대해 SimpleITK 또는 nibabel로 로드해 shape, spacing, min/max intensity 확인
+# extract_meta_data() 함수로 재사용성 높임
+# 장점: 동일한 구조의 메타 정보를 한 번에 모아서, 이미지 특성 분포(예: max intensity)가 어떻게 다른지 파악 용이
+# 마스크 라벨 검사
 
-각 마스크에서 np.unique()로 0,1,2,4가 맞는지 확인
-BraTS 2020의 표준 라벨(ET=4, ED=2, NCR/NET=1, 배경=0)과 다른 값이 있나 점검
-장점: 잘못된 라벨링이나 누락된 마스크가 있는지 빠르게 식별 가능
-값 분포 시각화 (히스토그램)
+# 각 마스크에서 np.unique()로 0,1,2,4가 맞는지 확인
+# BraTS 2020의 표준 라벨(ET=4, ED=2, NCR/NET=1, 배경=0)과 다른 값이 있나 점검
+# 장점: 잘못된 라벨링이나 누락된 마스크가 있는지 빠르게 식별 가능
+# 값 분포 시각화 (히스토그램)
 
-meta_df에서 flair_max, t1_max, t1ce_max, t2_max만 골라 sns.histplot으로 분포 확인
-특정 모달리티(FLAIR, T1CE)는 최대값이 크게 튈 수 있음 → MRI 특성(조영 효과, 수분 함량 등)에 영향
-장점: 전처리(클리핑, 정규화) 전략 수립에 도움
+# meta_df에서 flair_max, t1_max, t1ce_max, t2_max만 골라 sns.histplot으로 분포 확인
+# 특정 모달리티(FLAIR, T1CE)는 최대값이 크게 튈 수 있음 → MRI 특성(조영 효과, 수분 함량 등)에 영향
+# 장점: 전처리(클리핑, 정규화) 전략 수립에 도움
 # 애니메이션 형태의 슬라이스 시각화
 
 # matplotlib.animation.ArtistAnimation 이용
